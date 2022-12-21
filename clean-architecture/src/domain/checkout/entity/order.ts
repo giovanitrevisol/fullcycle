@@ -44,6 +44,9 @@ export default class Order {
   }
 
   total(): number {
-    return this._items.reduce((acc, item) => acc + item.price, 0);
+    if (this._items!=undefined) 
+      return this._items.reduce((acc, item) => acc + item.calcPrice, 0);
+      
+    return 0;
   }
 }

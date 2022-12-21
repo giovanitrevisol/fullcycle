@@ -1,9 +1,13 @@
-import Entity from "../../@shared/entity/entity.abstract";
 import Address from "../value-object/address";
+import EventDispatcher from "../../@shared/event/event-dispatcher";
+import CustomerChangeAddressEvent from "../../customer/event/customer-change-address.event";
+import EnviaConsoleLogHandler from "../../customer/event/handler/envia-console-log.handler";
+import Entity from "../../@shared/entity/entity.abstract";
 import NotificationError from "../../@shared/notification/notification.error";
 import CustomerValidatorFactory from "../factory/customer.validator.factory";
 
 export default class Customer extends Entity {
+  //private _id: string;
   private _name: string = "";
   private _address!: Address;
   private _active: boolean = false;
@@ -14,10 +18,17 @@ export default class Customer extends Entity {
     this._id = id;
     this._name = name;
     this.validate();
+
     if (this.notification.hasErrors()) {
       throw new NotificationError(this.notification.getErrors());
     }
   }
+
+  /*
+  get id(): string {
+    return this._id;
+  }
+  */
 
   get name(): string {
     return this._name;
@@ -29,6 +40,23 @@ export default class Customer extends Entity {
 
   validate() {
     CustomerValidatorFactory.create().validate(this);
+
+    /*
+    if (this.id.length === 0) {
+      //throw new Error("Id is required");
+      this.notification.addError({
+        context: "customer",
+        message: "Id is required",
+      });
+    }
+    if (this._name.length === 0) {
+      //throw new Error("Name is required");
+      this.notification.addError({
+        context: "customer",
+        message: "Name is required",
+      });
+    }
+    */
   }
 
   changeName(name: string) {
@@ -39,9 +67,17 @@ export default class Customer extends Entity {
   get Address(): Address {
     return this._address;
   }
-
+  
   changeAddress(address: Address) {
+    const eventDispatcher = new EventDispatcher();
+    const eventLogHandler = new EnviaConsoleLogHandler();    
+    eventDispatcher.register("CustomerChangeAddressEvent", eventLogHandler);
+    
+    const customerChangeAddressEvent = new CustomerChangeAddressEvent(this);
+
     this._address = address;
+
+    eventDispatcher.notify(customerChangeAddressEvent);
   }
 
   isActive(): boolean {
