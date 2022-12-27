@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.gt.admin.catalogo.domain.category.CategoryTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2022-12-27T19:33:52" hostname="MacBook-Air-de-Giovani.local" time="0.022">
+  <properties/>
+  <testcase name="givenAValidInactiveCategory_whenCallActivate_thenReturnCategoryActivated()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.015"/>
+  <testcase name="givenAValidCategory_whenCallUpdate_thenReturnCategoryUpdated()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.001"/>
+  <testcase name="givenAnInvalidNameLengthMoreThan255_whenCallNewCategoryAndValidate_thenShouldReceiveError()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.001"/>
+  <testcase name="givenAValidEmptyDescription_whenCallNewCategoryAndValidate_thenShouldReceiveOK()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.0"/>
+  <testcase name="givenAnInvalidNameLengthLessThan3_whenCallNewCategoryAndValidate_thenShouldReceiveError()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.0"/>
+  <testcase name="givenAnInvalidNullName_whenCallNewCataegoryAndValidade_thenShouldReturnError()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.0"/>
+  <testcase name="givenAValidCategory_whenCallUpdateWithInvalidParams_thenReturnCategoryUpdated()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.0"/>
+  <testcase name="givenAValildParams_whenCallNewCataegory_thenInstantiateACategory()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.001"/>
+  <testcase name="givenAValidCategory_whenCallUpdateToInactive_thenReturnCategoryUpdated()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.0"/>
+  <testcase name="givenAValidActiveCategory_whenCallDeactivate_thenReturnCategoryInactivate()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.0"/>
+  <testcase name="givenAnInvalidEmptyName_whenCallNewCataegoryAndValidade_thenShouldReturnError()" classname="com.gt.admin.catalogo.domain.category.CategoryTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.gt.admin.catalogo.application.UseCaseTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-12-27T12:13:59" hostname="MacBook-Air-de-Giovani.local" time="0.011">
+  <properties/>
+  <testcase name="testCreateUseCase()" classname="com.gt.admin.catalogo.application.UseCaseTest" time="0.011"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

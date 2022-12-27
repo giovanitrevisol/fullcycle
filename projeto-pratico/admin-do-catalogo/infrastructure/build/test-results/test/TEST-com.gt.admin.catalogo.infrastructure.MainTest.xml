@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.gt.admin.catalogo.infrastructure.MainTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2022-12-27T12:17:34" hostname="MacBook-Air-de-Giovani.local" time="0.01">
+  <properties/>
+  <testcase name="testMain()" classname="com.gt.admin.catalogo.infrastructure.MainTest" time="0.01"/>
+  <system-out><![CDATA[Hello world!
+com.gt.admin.catalogo.domain.Category@1e6a3214
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
