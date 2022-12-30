@@ -1,12 +1,6 @@
 package com.gt.admin.catalogo.application;
 
+public abstract class UseCase<IN, OUT> {
 
-import com.gt.admin.catalogo.domain.category.Category;
-
-public class UseCase {
-
-    public Category execute(){
-        return null;
-    }
-
+    public abstract OUT execute(IN anIN);
 }
