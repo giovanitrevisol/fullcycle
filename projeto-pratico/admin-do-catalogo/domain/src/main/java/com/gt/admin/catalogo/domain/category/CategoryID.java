@@ -23,8 +23,9 @@ public class CategoryID  extends Identifier {
     }
 
     public static CategoryID from(final UUID anID){
-        return new CategoryID(anID.toString().toLowerCase());
+        return new CategoryID(anID.toString().toLowerCase().substring(0, 32));
     }
+    //TODO - ajustar UUID
 
     public String getValue() {
         return value;
