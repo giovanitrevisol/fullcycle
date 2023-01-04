@@ -1,8 +1,10 @@
 package com.gt.admin.catalogo.domain.category;
 
-import com.gt.admin.catalogo.domain.pagination.Pagination;
-
+import java.util.List;
 import java.util.Optional;
+
+import com.gt.admin.catalogo.domain.pagination.Pagination;
+import com.gt.admin.catalogo.domain.pagination.SearchQuery;
 
 public interface CategoryGateway {
 
@@ -14,6 +16,7 @@ public interface CategoryGateway {
 
     Category update(Category aCategory);
 
-    Pagination<Category> findAll(CategorySearchQuery aQuery);
+    Pagination<Category> findAll(SearchQuery aQuery);
 
+    List<CategoryID> existsByIds(Iterable<CategoryID> ids);
 }

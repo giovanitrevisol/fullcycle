@@ -1,133 +1,138 @@
 package com.gt.admin.catalogo.application.category.create;
 
+import com.gt.admin.catalogo.application.UseCaseTest;
+import com.gt.admin.catalogo.application.category.create.CreateCategoryCommand;
+import com.gt.admin.catalogo.application.category.create.DefaultCreateCategoryUseCase;
 import com.gt.admin.catalogo.domain.category.CategoryGateway;
+
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.AdditionalAnswers;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
-
+import java.util.List;
 import java.util.Objects;
 
-import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.when;
 
-@ExtendWith(MockitoExtension.class)
-public class CreateCategoryUseCaseTest {
+public class CreateCategoryUseCaseTest extends UseCaseTest {
 
-    @InjectMocks
-    private DefaultCreateCategoryUseCase useCase;
+        @InjectMocks
+        private DefaultCreateCategoryUseCase useCase;
 
-    @Mock
-    private CategoryGateway categoryGateway;
+        @Mock
+        private CategoryGateway categoryGateway;
 
-    @BeforeEach
-    void cleanUp(){
-        Mockito.reset(categoryGateway);
-    }
+        @Override
+        protected List<Object> getMocks() {
+                return List.of(categoryGateway);
+        }
 
-    // 1. Teste do caminho feliz
-    // 2. Teste passando uma propriedade inválida (name)
-    // 3. Teste criando uma categoria inativa
-    // 4. Teste simulando um erro generico vindo do gateway
+        // 1. Teste do caminho feliz
+        // 2. Teste passando uma propriedade inválida (name)
+        // 3. Teste criando uma categoria inativa
+        // 4. Teste simulando um erro generico vindo do gateway
 
-    @Test
-    public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
-        final var expectedIsActive = true;
+        @Test
+        public void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() {
+                final var expectedName = "Filmes";
+                final var expectedDescription = "A categoria mais assistida";
+                final var expectedIsActive = true;
 
-        final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+                final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
+                when(categoryGateway.create(any()))
+                                .thenAnswer(returnsFirstArg());
 
-        when(categoryGateway.create(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+                final var actualOutput = useCase.execute(aCommand).get();
 
+                Assertions.assertNotNull(actualOutput);
+                Assertions.assertNotNull(actualOutput.id());
 
-        final var actualOutput = useCase.execute(aCommand).get();
+                Mockito.verify(categoryGateway, times(1))
+                                .create(argThat(aCategory -> Objects.equals(expectedName, aCategory.getName())
+                                                && Objects.equals(expectedDescription, aCategory.getDescription())
+                                                && Objects.equals(expectedIsActive, aCategory.isActive())
+                                                && Objects.nonNull(aCategory.getId())
+                                                && Objects.nonNull(aCategory.getCreatedAt())
+                                                && Objects.nonNull(aCategory.getUpdatedAt())
+                                                && Objects.isNull(aCategory.getDeletedAt())));
+        }
 
-        Assertions.assertNotNull(actualOutput);
-        Assertions.assertNotNull(actualOutput.id());
+        @Test
+        public void givenAInvalidName_whenCallsCreateCategory_thenShouldReturnDomainException() {
+                final String expectedName = null;
+                final var expectedDescription = "A categoria mais assistida";
+                final var expectedIsActive = true;
+                final var expectedErrorMessage = "'name' should not be null";
+                final var expectedErrorCount = 1;
 
-        Mockito.verify(categoryGateway, times(1))
-                .create(argThat(aCategory ->
-                        Objects.equals(expectedName, aCategory.getName())
-                                && Objects.equals(expectedDescription, aCategory.getDescription())
-                                && Objects.equals(expectedIsActive, aCategory.isActive())
-                                && Objects.nonNull(aCategory.getId())
-                                && Objects.nonNull(aCategory.getCreatedAt())
-                                && Objects.nonNull(aCategory.getUpdatedAt())
-                                && Objects.isNull(aCategory.getDeletedAt())));
-    }
+                final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
-    @Test
-    public void givenAInvalidName_whenCallsCreateCategory_thenShouldReturnDomainException() {
-        final String expectedName = null;
-        final var expectedDescription = "A categoria mais assistida";
-        final var expectedIsActive = true;
-        final var expectedErrorMessage = "'name' should not be null";
-        final var expectedErrorCount = 1;
+                final var notification = useCase.execute(aCommand).getLeft();
 
-        final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+                Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
+                Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
 
-        final var notification = useCase.execute(aCommand).getLeft();
+                Mockito.verify(categoryGateway, times(0)).create(any());
+        }
 
-        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
-        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
+        @Test
+        public void givenAValidCommandWithInactiveCategory_whenCallsCreateCategory_shouldReturnInactiveCategoryId() {
+                final var expectedName = "Filmes";
+                final var expectedDescription = "A categoria mais assistida";
+                final var expectedIsActive = false;
 
-        Mockito.verify(categoryGateway, times(0)).create(any());
-    }
+                final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
-    @Test
-    public void givenAValidCommandWithInactiveCategory_whenCallsCreateCategory_shouldReturnInactiveCategoryId() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
-        final var expectedIsActive = false;
+                when(categoryGateway.create(any()))
+                                .thenAnswer(returnsFirstArg());
 
-        final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+                final var actualOutput = useCase.execute(aCommand).get();
 
-        when(categoryGateway.create(any())).thenAnswer(AdditionalAnswers.returnsFirstArg());
+                Assertions.assertNotNull(actualOutput);
+                Assertions.assertNotNull(actualOutput.id());
 
-        final var actualOutput = useCase.execute(aCommand).get();
+                Mockito.verify(categoryGateway, times(1))
+                                .create(argThat(aCategory -> Objects.equals(expectedName, aCategory.getName())
+                                                && Objects.equals(expectedDescription, aCategory.getDescription())
+                                                && Objects.equals(expectedIsActive, aCategory.isActive())
+                                                && Objects.nonNull(aCategory.getId())
+                                                && Objects.nonNull(aCategory.getCreatedAt())
+                                                && Objects.nonNull(aCategory.getUpdatedAt())
+                                                && Objects.nonNull(aCategory.getDeletedAt())));
+        }
 
-        Assertions.assertNotNull(actualOutput);
-        Assertions.assertNotNull(actualOutput.id());
+        @Test
+        public void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
+                final var expectedName = "Filmes";
+                final var expectedDescription = "A categoria mais assistida";
+                final var expectedIsActive = true;
+                final var expectedErrorCount = 1;
+                final var expectedErrorMessage = "Gateway error";
 
-        Mockito.verify(categoryGateway, times(1))
-                .create(argThat(aCategory ->
-                        Objects.equals(expectedName, aCategory.getName())
-                                && Objects.equals(expectedDescription, aCategory.getDescription())
-                                && Objects.equals(expectedIsActive, aCategory.isActive())
-                                && Objects.nonNull(aCategory.getId())
-                                && Objects.nonNull(aCategory.getCreatedAt())
-                                && Objects.nonNull(aCategory.getUpdatedAt())
-                                && Objects.nonNull(aCategory.getDeletedAt())));
-    }
+                final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
 
-    @Test
-    public void givenAValidCommand_whenGatewayThrowsRandomException_shouldReturnAException() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
-        final var expectedIsActive = true;
-        final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "Gateway error";
+                when(categoryGateway.create(any()))
+                                .thenThrow(new IllegalStateException(expectedErrorMessage));
 
-        final var aCommand = CreateCategoryCommand.with(expectedName, expectedDescription, expectedIsActive);
+                final var notification = useCase.execute(aCommand).getLeft();
 
-        when(categoryGateway.create(any())).thenThrow(new IllegalStateException(expectedErrorMessage));
+                Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
+                Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
 
-        final var notification = useCase.execute(aCommand).getLeft();
-
-        Assertions.assertEquals(expectedErrorCount, notification.getErrors().size());
-        Assertions.assertEquals(expectedErrorMessage, notification.firstError().message());
-
-        Mockito.verify(categoryGateway, times(1)).create(argThat(aCategory -> Objects.equals(expectedName, aCategory.getName()) && Objects.equals(expectedDescription, aCategory.getDescription()) && Objects.equals(expectedIsActive, aCategory.isActive()) && Objects.nonNull(aCategory.getId()) && Objects.nonNull(aCategory.getCreatedAt()) && Objects.nonNull(aCategory.getUpdatedAt()) && Objects.isNull(aCategory.getDeletedAt())));
-    }
-
+                Mockito.verify(categoryGateway, times(1))
+                                .create(argThat(aCategory -> Objects.equals(expectedName, aCategory.getName())
+                                                && Objects.equals(expectedDescription, aCategory.getDescription())
+                                                && Objects.equals(expectedIsActive, aCategory.isActive())
+                                                && Objects.nonNull(aCategory.getId())
+                                                && Objects.nonNull(aCategory.getCreatedAt())
+                                                && Objects.nonNull(aCategory.getUpdatedAt())
+                                                && Objects.isNull(aCategory.getDeletedAt())));
+        }
 }
-
-

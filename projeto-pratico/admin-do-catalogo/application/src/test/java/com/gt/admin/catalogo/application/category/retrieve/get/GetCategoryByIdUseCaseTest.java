@@ -1,89 +1,87 @@
 package com.gt.admin.catalogo.application.category.retrieve.get;
 
-import com.gt.admin.catalogo.application.retrieve.get.DefaultGetCategoruByIdUseCase;
+import com.gt.admin.catalogo.application.UseCaseTest;
+import com.gt.admin.catalogo.application.category.retrieve.get.DefaultGetCategoryByIdUseCase;
 import com.gt.admin.catalogo.domain.category.Category;
 import com.gt.admin.catalogo.domain.category.CategoryGateway;
 import com.gt.admin.catalogo.domain.category.CategoryID;
-import com.gt.admin.catalogo.domain.exceptions.DomainException;
+import com.gt.admin.catalogo.domain.exceptions.NotFoundException;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 import java.util.Optional;
 
-@ExtendWith(MockitoExtension.class)
-public class GetCategoryByIdUseCaseTest {
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.when;
 
-    @InjectMocks
-    private DefaultGetCategoruByIdUseCase useCase;
+public class GetCategoryByIdUseCaseTest extends UseCaseTest {
 
-    @Mock
-    private CategoryGateway categoryGateway;
+        @InjectMocks
+        private DefaultGetCategoryByIdUseCase useCase;
 
-//    @Override
-//    protected List<Object> getMocks() {
-//        return List.of(categoryGateway);
-//    }
+        @Mock
+        private CategoryGateway categoryGateway;
 
-    @Test
-    public void givenAValidId_whenCallsGetCategory_shouldReturnCategory() {
-        final var expectedName = "Filmes";
-        final var expectedDescription = "A categoria mais assistida";
-        final var expectedIsActive = true;
+        @Override
+        protected List<Object> getMocks() {
+                return List.of(categoryGateway);
+        }
 
-        final var aCategory =
-                Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+        @Test
+        public void givenAValidId_whenCallsGetCategory_shouldReturnCategory() {
+                final var expectedName = "Filmes";
+                final var expectedDescription = "A categoria mais assistida";
+                final var expectedIsActive = true;
 
-        final var expectedId = aCategory.getId();
+                final var aCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
 
-        Mockito.when(categoryGateway.findById(Mockito.eq(expectedId)))
-                .thenReturn(Optional.of(aCategory.clone()));
+                final var expectedId = aCategory.getId();
 
-        final var actualCategory = useCase.execute(expectedId.getValue());
+                when(categoryGateway.findById(eq(expectedId)))
+                                .thenReturn(Optional.of(aCategory.clone()));
 
-        Assertions.assertEquals(expectedId, actualCategory.id());
-        Assertions.assertEquals(expectedName, actualCategory.name());
-        Assertions.assertEquals(expectedDescription, actualCategory.description());
-        Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
-        Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.createdAt());
-        Assertions.assertEquals(aCategory.getUpdatedAt(), actualCategory.updatedAt());
-        Assertions.assertEquals(aCategory.getDeletedAt(), actualCategory.deletedAt());
-    }
+                final var actualCategory = useCase.execute(expectedId.getValue());
 
-    @Test
-    public void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() {
-        final var expectedErrorMessage = "Category with ID 123 was not found";
-        final var expectedId = CategoryID.from("123");
+                Assertions.assertEquals(expectedId, actualCategory.id());
+                Assertions.assertEquals(expectedName, actualCategory.name());
+                Assertions.assertEquals(expectedDescription, actualCategory.description());
+                Assertions.assertEquals(expectedIsActive, actualCategory.isActive());
+                Assertions.assertEquals(aCategory.getCreatedAt(), actualCategory.createdAt());
+                Assertions.assertEquals(aCategory.getUpdatedAt(), actualCategory.updatedAt());
+                Assertions.assertEquals(aCategory.getDeletedAt(), actualCategory.deletedAt());
+        }
 
-        Mockito.when(categoryGateway.findById(Mockito.eq(expectedId)))
-                .thenReturn(Optional.empty());
+        @Test
+        public void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() {
+                final var expectedErrorMessage = "Category with ID 123 was not found";
+                final var expectedId = CategoryID.from("123");
 
-        final var actualException = Assertions.assertThrows(
-                DomainException.class,
-                () -> useCase.execute(expectedId.getValue())
-        );
+                when(categoryGateway.findById(eq(expectedId)))
+                                .thenReturn(Optional.empty());
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
-    }
+                final var actualException = Assertions.assertThrows(
+                                NotFoundException.class,
+                                () -> useCase.execute(expectedId.getValue()));
 
-    @Test
-    public void givenAValidId_whenGatewayThrowsException_shouldReturnException() {
-        final var expectedErrorMessage = "Gateway error";
-        final var expectedId = CategoryID.from("123");
+                Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        }
 
-        Mockito.when(categoryGateway.findById(Mockito.eq(expectedId)))
-                .thenThrow(new IllegalStateException(expectedErrorMessage));
+        @Test
+        public void givenAValidId_whenGatewayThrowsException_shouldReturnException() {
+                final var expectedErrorMessage = "Gateway error";
+                final var expectedId = CategoryID.from("123");
 
-        final var actualException = Assertions.assertThrows(
-                IllegalStateException.class,
-                () -> useCase.execute(expectedId.getValue())
-        );
+                when(categoryGateway.findById(eq(expectedId)))
+                                .thenThrow(new IllegalStateException(expectedErrorMessage));
 
-        Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
-    }
+                final var actualException = Assertions.assertThrows(
+                                IllegalStateException.class,
+                                () -> useCase.execute(expectedId.getValue()));
+
+                Assertions.assertEquals(expectedErrorMessage, actualException.getMessage());
+        }
 }

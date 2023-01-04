@@ -18,7 +18,6 @@ plugins {
 group 'com.gt.admin.catalogo.infrastructure'
 version '1.0-SNAPSHOT'
 
-//bootJar usado para setar a pasta raiz do projeto - local onde sera criado o build do projeto
 bootJar {
     archiveName 'application.jar'
     destinationDirectory.set(file("${rootProject.buildDir}/libs"))
@@ -29,26 +28,40 @@ repositories {
 }
 
 dependencies {
-
     implementation(project(":domain"))
     implementation(project(":application"))
 
-    // https://mvnrepository.com/artifact/org.projectlombok/lombok
-    compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.18.24'
+    implementation('io.vavr:vavr:0.10.4')
 
+    implementation('com.google.cloud:google-cloud-storage:2.14.0')
+    implementation 'com.google.guava:guava:31.1-jre'
+
+    implementation('mysql:mysql-connector-java')
+
+    implementation('org.springdoc:springdoc-openapi-webmvc-core:1.6.8')
+    implementation('org.springdoc:springdoc-openapi-ui:1.6.8')
 
     implementation('org.springframework.boot:spring-boot-starter-web') {
         exclude module: 'spring-boot-starter-tomcat'
     }
     implementation('org.springframework.boot:spring-boot-starter-undertow')
-    implementation('mysql:mysql-connector-java')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    implementation('org.springframework.boot:spring-boot-starter-amqp')
+
+    implementation('com.fasterxml.jackson.module:jackson-module-afterburner')
+
+    testImplementation(project(path: ':domain', configuration: 'testClasses'))
 
     testImplementation('org.flywaydb:flyway-core')
+
     testImplementation('org.springframework.boot:spring-boot-starter-test')
+    testImplementation('org.springframework.amqp:spring-rabbit-test:2.4.4')
+
+    testImplementation('org.testcontainers:testcontainers:1.17.2')
+    testImplementation('org.testcontainers:mysql:1.17.2')
+    testImplementation('org.testcontainers:junit-jupiter:1.17.2')
 
     testRuntimeOnly('com.h2database:h2')
-
 }
 
 flyway {
@@ -56,7 +69,6 @@ flyway {
     user = System.getenv('FLYWAY_USER') ?: 'root'
     password = System.getenv('FLYWAY_PASS') ?: '123456'
 }
-
 
 test {
     useJUnitPlatform()

@@ -33,3 +33,5 @@ O projeto *Admin-do-catalogo* será dividido em 3 módulos: **domain**, **applic
 Porque separar em módulos um projeto assim?
 
 A idéia é não causar acoplamento/dependência. 
+
+> TODO - Terminar documentação

@@ -1,14 +1,15 @@
 package com.gt.admin.catalogo.infrastructure.category.persistence;
 
-import com.gt.admin.catalogo.domain.category.Category;
-import com.gt.admin.catalogo.domain.category.CategoryID;
-import lombok.*;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+
+import com.gt.admin.catalogo.domain.category.Category;
+import com.gt.admin.catalogo.domain.category.CategoryID;
+
 import java.time.Instant;
+
 @Entity(name = "Category")
 @Table(name = "categories")
 public class CategoryJpaEntity {
@@ -45,8 +46,7 @@ public class CategoryJpaEntity {
             final boolean active,
             final Instant createdAt,
             final Instant updatedAt,
-            final Instant deletedAt
-    ) {
+            final Instant deletedAt) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -64,8 +64,7 @@ public class CategoryJpaEntity {
                 aCategory.isActive(),
                 aCategory.getCreatedAt(),
                 aCategory.getUpdatedAt(),
-                aCategory.getDeletedAt()
-        );
+                aCategory.getDeletedAt());
     }
 
     public Category toAggregate() {
@@ -76,8 +75,7 @@ public class CategoryJpaEntity {
                 isActive(),
                 getCreatedAt(),
                 getUpdatedAt(),
-                getDeletedAt()
-        );
+                getDeletedAt());
     }
 
     public String getId() {

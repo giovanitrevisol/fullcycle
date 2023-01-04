@@ -4,15 +4,18 @@ import com.gt.admin.catalogo.application.category.create.CreateCategoryUseCase;
 import com.gt.admin.catalogo.application.category.create.DefaultCreateCategoryUseCase;
 import com.gt.admin.catalogo.application.category.delete.DefaultDeleteCategoryUseCase;
 import com.gt.admin.catalogo.application.category.delete.DeleteCategoryUseCase;
+import com.gt.admin.catalogo.application.category.retrieve.get.DefaultGetCategoryByIdUseCase;
+import com.gt.admin.catalogo.application.category.retrieve.get.GetCategoryByIdUseCase;
+import com.gt.admin.catalogo.application.category.retrieve.list.DefaultListCategoriesUseCase;
+import com.gt.admin.catalogo.application.category.retrieve.list.ListCategoriesUseCase;
 import com.gt.admin.catalogo.application.category.update.DefaultUpdateCategoryUseCase;
 import com.gt.admin.catalogo.application.category.update.UpdateCategoryUseCase;
-import com.gt.admin.catalogo.application.retrieve.get.DefaultGetCategoruByIdUseCase;
-import com.gt.admin.catalogo.application.retrieve.get.GetCategoruByIdUseCase;
-import com.gt.admin.catalogo.application.retrieve.list.DefaultListCategoriesUseCase;
-import com.gt.admin.catalogo.application.retrieve.list.ListCategoriesUseCase;
 import com.gt.admin.catalogo.domain.category.CategoryGateway;
-import org.springframework.context.annotation.Bean;
 
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
 public class CategoryUseCaseConfig {
 
     private final CategoryGateway categoryGateway;
@@ -32,8 +35,8 @@ public class CategoryUseCaseConfig {
     }
 
     @Bean
-    public GetCategoruByIdUseCase getCategoryByIdUseCase() {
-        return new DefaultGetCategoruByIdUseCase(categoryGateway);
+    public GetCategoryByIdUseCase getCategoryByIdUseCase() {
+        return new DefaultGetCategoryByIdUseCase(categoryGateway);
     }
 
     @Bean
