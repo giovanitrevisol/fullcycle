@@ -19,3 +19,19 @@ spec:
       containers:
         - name: goserver
           image: "giovanitrevisol/hello-go:lastest"
+          # Opção 2 
+          # env:
+          #   - name: NAME
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: NAME
+          #   - name: AGE
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: AGE
+          # Opção 2 
+          envFrom: 
+            - configMapRef:
+                name: goserver-env

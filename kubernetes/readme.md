@@ -12,7 +12,7 @@ deleta o cluster `kind delete clusters name_cluster`
 
 ## Criando cluster com multiplos nodes
 criar arquivo de configuração no dir. `k8s/kind.yaml`
-execute `kind create cluster --config=k8s/kind.yaml --name=clusterName`
+execute `kind create cluster --config=k8s/kind.yaml --name=clusterName` 
 
 # clusters configurados
 No arquivo `/.kube/config` temos as configurações dos cluster configurados em nossa máquina. Para ver quais são os clusters `kubectl config get-clusters`
@@ -73,3 +73,5 @@ Para executar `kubectl apply -f k8s/service.yaml`
 # Utilizando Proxy para acessar API do Kubernetes
 
 `kubectl proxy --port=8080`
+
+# ConfigMap
