@@ -75,3 +75,14 @@ Para executar `kubectl apply -f k8s/service.yaml`
 `kubectl proxy --port=8080`
 
 # ConfigMap
+criar arquivo `/k8s/configmap-env.yaml` adicionar parametros desejados.
+
+Para executar `kubectl apply -f k8s/config-map.yaml` 
+
+Agora precisamos rodar o deploy novamente `kubectl apply -f k8s/deployment.yaml`
+
+# Secrets
+criar arquivo `/k8s/secret.yaml` adicionar parametros desejados.
+
+
+Adicinar chamada no arquivo deploy... Agora precisamos rodar o deploy novamente `kubectl apply -f k8s/deployment.yaml`
