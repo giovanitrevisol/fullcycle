@@ -1,0 +1,40 @@
+# configuracoes do replicaset
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: goserver
+  labels:
+    app: goserver
+spec:
+  selector:
+    matchLabels:
+      app: goserver
+  replicas: 2
+  # abaixo configurações de cada pod
+  template:
+    metadata:
+      labels:
+        app: goserver
+    spec:
+      containers:
+        - name: goserver
+          image: "giovanitrevisol/hello-go:lastest"
+          # Opção 2 
+          # env:
+          #   - name: NAME
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: NAME
+          #   - name: AGE
+          #     valueFrom:
+          #       configMapKeyRef:
+          #         name: goserver-env
+          #         key: AGE
+          # Opção 2 
+          envFrom: 
+            - configMapRef:
+                name: goserver-env
+          # Usando secret
+            - secretRef:
+                name: goserver-secret
