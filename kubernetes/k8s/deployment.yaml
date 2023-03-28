@@ -19,7 +19,7 @@ spec:
       containers:
         - name: goserver
           image: "giovanitrevisol/hello-go:lastest"
-          # Opção 2 
+          # Opção 2
           # env:
           #   - name: NAME
           #     valueFrom:
@@ -31,10 +31,15 @@ spec:
           #       configMapKeyRef:
           #         name: goserver-env
           #         key: AGE
-          # Opção 2 
-          envFrom: 
+          # Opção 2
+          envFrom:
             - configMapRef:
                 name: goserver-env
-          # Usando secret
+            # Usando secret
             - secretRef:
                 name: goserver-secret
+
+      volumes:
+        - name: goserver-pvc
+          persistentVolumeClaim:
+            claimName: goserver-pvc

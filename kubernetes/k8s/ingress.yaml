@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-host
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    ceret-maneger.io/cluster-issuer: "letsencript"
+    ingress.kubernetes.io/force-ssl-redirect: "true"
+  labels:
+    name: myingress
+spec:
+  rules:
+    - host: "ingress.giovanitrevisol.com.br"
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: goservice-service
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - "ingress.giovanitrevisol.com.br"
+      secretName: letsencrypt-tls
